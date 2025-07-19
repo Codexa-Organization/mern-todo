@@ -3,17 +3,17 @@ import { getTodos, createTodo, updateTodo, deleteTodo } from '../services/api';
 import { PencilIcon, TrashIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import PuffLoader from 'react-spinners/PuffLoader';  // NEW: Import PuffLoader from react-spinners.
+import PuffLoader from 'react-spinners/PuffLoader';
 
 const Todos = () => {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(true);  // NEW: Loading state - shuru mein true (loading on).
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTodos = async () => {
-      setLoading(true);  // NEW: Loading start before fetch.
+      setLoading(true);
       try {
         const { data } = await getTodos();
         setTodos(data);
@@ -23,7 +23,7 @@ const Todos = () => {
         if (error.response?.status === 401) window.location.href = '/';
         toast.error('Error loading todos. Please try again.');
       } finally {
-        setLoading(false);  // NEW: Loading end after fetch (success ya error).
+        setLoading(false);
       }
     };
     fetchTodos();
@@ -31,6 +31,10 @@ const Todos = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!text.trim()) {  // NEW: Empty text check - agar blank, submit mat karo (error avoid).
+      toast.warning('Please enter a todo text!');
+      return;
+    }
     try {
       if (editingId) {
         const { data } = await updateTodo(editingId, { text });
@@ -82,11 +86,11 @@ const Todos = () => {
     <ToastContainer position="bottom-right" autoClose={3000} theme="light" />
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow-md">
       <h2 className="text-2xl mb-4">Todo List</h2>
-      {loading ? (  // NEW: If loading true, show loader spinner.
+      {loading ? (
         <div className="flex justify-center items-center">
-          <PuffLoader color="#00BFFF" size={100} loading={loading} />  // NEW: PuffLoader - blue color, size 100.
+          <PuffLoader color="#00BFFF" size={100} loading={loading} />
         </div>
-      ) : (  // Else, show form and list.
+      ) : (
         <>
           <form onSubmit={handleSubmit} className="mb-4">
             <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder="Add a todo" className="w-full p-2 border mb-2" required />
