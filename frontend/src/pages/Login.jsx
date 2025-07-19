@@ -6,8 +6,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSignup, setIsSignup] = useState(false);
 
+
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+     console.log('Login attempt with URL:', import.meta.env.VITE_API_URL + '/api/auth/login');  // Debug: Print URL.
     try {
       const { data } = isSignup ? await signupApi({ email, password }) : await loginApi({ email, password });
       localStorage.setItem('token', data.token);
